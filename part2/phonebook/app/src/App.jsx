@@ -1,22 +1,36 @@
 import { useState } from "react";
 
+import initialPersons from "./data/persons.json";
+
+import Filter from "./components/Filter";
+import NewPersonForm from "./components/NewPersonForm";
+import Persons from "./components/Persons";
+
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
-  const [newName, setNewName] = useState("");
+  const [persons, setPersons] = useState(initialPersons);
+
+  const [newPerson, setNewPerson] = useState({ name: "", number: "", id: "" });
+  const [nameFilter, setNameFilter] = useState("");
+
+  const personsToDisplay = nameFilter
+    ? persons.filter((person) => {
+        return person.name.toLowerCase().includes(nameFilter);
+      })
+    : persons;
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          name: <input />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter setNameFilter={setNameFilter} />
+      <h2>add new name and number</h2>
+      <NewPersonForm
+        persons={persons}
+        setPersons={setPersons}
+        newPerson={newPerson}
+        setNewPerson={setNewPerson}
+      />
       <h2>Numbers</h2>
-      ...
+      <Persons personsToDisplay={personsToDisplay} />
     </div>
   );
 };
