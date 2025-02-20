@@ -1,50 +1,59 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-
-// import initialPersons from "./data/persons.json";
+import personsService from "./services/persons.js";
 
 import Filter from "./components/Filter";
-import NewPersonForm from "./components/NewPersonForm";
+import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-
-  const [newPerson, setNewPerson] = useState({ name: "", number: "", id: "" });
+  const [newNameAndOrNumber, setNewNameAndOrNumber] = useState({
+    name: "",
+    number: "",
+  });
   const [nameFilter, setNameFilter] = useState("");
 
   useEffect(() => {
-    console.log("effect");
-    const getNumbers = async () => {
-      const respons = await axios.get("http://localhost:3001/persons");
-      const initialPersons = respons.data;
-      console.log("data received");
-      setPersons(initialPersons);
-    };
-    getNumbers();
+    const persons = personsService.getPersons();
+    persons.then((initialPersons) => setPersons(initialPersons));
   }, []);
 
-  console.log("render", persons.length, "persons/numbers");
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name}`)) {
+      personsService
+        .deletePerson(person.id)
+        .then(
+          setPersons(
+            persons.filter((filterPerson) => filterPerson.id !== person.id)
+          )
+        );
+    } else {
+      setPersons(persons);
+    }
+  };
 
   const personsToDisplay = nameFilter
     ? persons.filter((person) => {
-        return person.name.toLowerCase().includes(nameFilter);
+        return person.name.toLowerCase().includes(nameFilter.toLowerCase());
       })
     : persons;
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter setNameFilter={setNameFilter} />
-      <h2>add new name and number</h2>
-      <NewPersonForm
+      <h3>add new name and number</h3>
+      <PersonForm
         persons={persons}
         setPersons={setPersons}
-        newPerson={newPerson}
-        setNewPerson={setNewPerson}
+        newNameAndOrNumber={newNameAndOrNumber}
+        setNewNameAndOrNumber={setNewNameAndOrNumber}
       />
-      <h2>Numbers</h2>
-      <Persons personsToDisplay={personsToDisplay} />
+      <h3>Numbers</h3>
+      <Persons
+        personsToDisplay={personsToDisplay}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };

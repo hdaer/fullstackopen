@@ -1,0 +1,31 @@
+.country-app {
+  margin: 1em;
+}
+
+.country-name {
+  margin-top: 1em;
+}
+
+h1,
+h2,
+h3 {
+  margin-top: 1em;
+}
+
+ul {
+  list-style: none;
+}
+
+.language-list {
+  list-style: square;
+  margin-top: 1em;
+}
+
+.country-flag {
+  margin-top: 1em;
+}
+
+button {
+  margin-left: 1em;
+  margin-top: 0.5em;
+}
